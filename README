@@ -1,0 +1,24 @@
+Markdown2IPythonNotebook
+
+Note: This is just a proof of concept based on
+http://lists.software-carpentry.org/pipermail/discuss_lists.software-carpentry.org/2013-October/001001.html.
+
+This is a parser from markdown to IPython Notebook format.
+
+Requeriment:
+
+* Python >= 3.x.x
+
+Install:
+
+    $ python setup install
+
+Run examples:
+
+    $ mk2ipynb examples/0.mk
+    $ mk2ipynb examples/1.mk
+    $ mk2ipynb examples/2.mk
+
+For more information:
+
+    $ mk2ipynb -h
