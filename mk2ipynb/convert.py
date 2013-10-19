@@ -17,6 +17,8 @@
 import json
 import logging
 
+PROMPT_NUMBER = 1
+
 def setup(ipynb):
     """
     Setup the ipynb.
@@ -28,7 +30,7 @@ def setup(ipynb):
     ipynb['metadata'] = {'name': 'simple'}
     ipynb['nbformat'] = 3
     ipynb['nbformat_minor'] = 0
-    ipynb['worksheet'] = [{'cells': [], 'metadata': dict()}]
+    ipynb['worksheets'] = [{'cells': [], 'metadata': dict()}]
 
 def parse_line_code(line):
     """
@@ -50,6 +52,8 @@ def run(i, o):
     :param o: the output file
     :type o: str
     """
+
+    global PROMPT_NUMBER
     
     ipynb = dict()  # the variable that will store the ipynb in memory
     setup(ipynb)
@@ -63,12 +67,14 @@ def run(i, o):
                 lstatus = parse_line_code(l)
                 if(old_lstatus is not None):
                     if (old_lstatus == lstatus):
+                        if(old_empty_line):
+                            source +='/n'
                         if(lstatus == 1):
-                            source += l.replace('    >>> ', '')
+                            source += l.replace('    >>> ', '').rstrip('\n')
                         elif(lstatus == 0):
-                            source += l
+                            source += l.rstrip('\n')
                     else:
-                        if(lstatus == 1):
+                        if(old_lstatus == 1):
                             # code
                             c = {"cell_type": "code",
                                  "collapsed": False,
@@ -76,40 +82,41 @@ def run(i, o):
                                  "language": "python",
                                  "metadata": {},
                                  "outputs": [],
-                                 "prompt_number": None}
-                            source = l.replace('    >>> ', '')
-                        elif(lstatus == 0):
+                                 "prompt_number": PROMPT_NUMBER}
+                            PROMPT_NUMBER += 1
+                            source = l.rstrip('\n')
+                        elif(old_lstatus == 0):
                             # markdown
                             c = {"cell_type": "markdown",
                                  "metadata": {},
                                  "source": source}
-                            source = l
-                        ipynb['worksheet'][0]['cells'].append(c)
+                            source = l.replace('    >>> ', '').rstrip('\n')
+                        ipynb['worksheets'][0]['cells'].insert(0, c)
                         old_lstatus = False
                         old_lstatus = lstatus
                 else:
                     old_lstatus = lstatus
                     if(lstatus == 1):
-                        source = l.replace('    >>> ', '')
+                        source = l.replace('    >>> ', '').rstrip('\n')
                     elif(lstatus == 0):
-                        source = l
+                        source = l.rstrip('\n')
     # For the last part
     if(lstatus == 1):
         # code
         c = {"cell_type": "code",
-             "collapsed": false,
+             "collapsed": False,
              "input": source,
              "language": "python",
              "metadata": {},
              "outputs": [],
-             "prompt_number": None}
+             "prompt_number": PROMPT_NUMBER}
     elif(lstatus == 0):
         # markdown
         c = {"cell_type": "markdown",
              "metadata": {},
              "source": source}
-    ipynb['worksheet'][0]['cells'].append(c)
+    ipynb['worksheets'][0]['cells'].insert(0, c)
     # The options for json.dumps are need to pretty print.
     with open(o, 'w') as fo:
-        json.dump(ipynb, fo, indent=4, sort_keys=True)
+        json.dump(ipynb, fo, indent=1, sort_keys=True)
 

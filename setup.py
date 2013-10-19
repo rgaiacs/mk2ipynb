@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='mk2ipynb',
-    version='0.1.0',
+    version='0.1.1',
     author='Raniere Silva',
     author_email='ra092767@ime.unicamp.br',
     packages=['mk2ipynb'],
