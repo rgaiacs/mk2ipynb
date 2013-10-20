@@ -68,7 +68,7 @@ def run(i, o):
                 if(old_lstatus is not None):
                     if (old_lstatus == lstatus):
                         if(old_empty_line):
-                            source +='/n'
+                            source +='\n'
                         if(lstatus == 1):
                             source += l.replace('    >>> ', '').rstrip('\n')
                         elif(lstatus == 0):

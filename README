@@ -5,15 +5,18 @@ http://lists.software-carpentry.org/pipermail/discuss_lists.software-carpentry.o
 
 This is a parser from markdown to IPython Notebook format.
 
-Requeriment:
+Requeriment
+-----------
 
 * Python >= 3.x.x
 
-Install:
+Install
+-------
 
     $ python setup install
 
-Run examples:
+Running
+-------
 
     $ mk2ipynb examples/0.mk
     $ mk2ipynb examples/1.mk
@@ -22,3 +25,14 @@ Run examples:
 For more information:
 
     $ mk2ipynb -h
+
+How it work
+-----------
+
+All lines of the form
+
+    >>> some python code
+
+goes into a python cell and the others into a markdown cell.
+
+Note: You MUST not include the output of the python code.
